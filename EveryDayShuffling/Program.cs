@@ -10,7 +10,7 @@ namespace EveryDayShuffling
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("")
+            Console.WriteLine("Welcome. Coming soon options to sort and shuffle.");
         }
     }
 }
