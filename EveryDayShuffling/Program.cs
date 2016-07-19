@@ -61,6 +61,11 @@ namespace EveryDayShuffling
         {
             return String.Format("{0} of {1}s.", rank, suit);
         }
+
+        public string ToSmallString()
+        {
+            return String.Format("{0}{1}", (int)rank, (int)suit);
+        }
     }
 
     public class CardDeck
@@ -98,6 +103,16 @@ namespace EveryDayShuffling
             }
             return sb.ToString();
         }
+
+        public string ToSmallString()
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (Card card in Cards)
+            {
+                sb.Append(card.ToSmallString());
+            }
+            return sb.ToString();
+        }
     }
 
     //Define a series of Card manipulation methods
@@ -107,7 +122,6 @@ namespace EveryDayShuffling
         {
             cd.Cards = cd.Cards;
             throw new NotImplementedException();
-            //return cards;
         }
 
         public static void Sort(ref CardDeck cd)
