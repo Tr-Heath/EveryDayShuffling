@@ -1,13 +1,32 @@
 ﻿using System;
+using System.Linq;
+using System.Text;
 
 namespace EveryDayShuffling
 {
     public enum Suit
     {
-        Heart = 1,
-        Club = 2,
-        Diamond = 3,
+        Club = 1,
+        Diamond = 2,
+        Heart = 3,
         Spade = 4
+    }
+
+    public enum CardValue
+    {
+        Two = 2,
+        Three = 3,
+        Four = 4,
+        Five = 5,
+        Six = 6,
+        Seven = 7,
+        Eight = 8,
+        Nine = 9,
+        Ten = 10,
+        Jack = 11,
+        Queen = 12,
+        King = 13,
+        Ace = 1
     }
 
     class Program
@@ -16,21 +35,18 @@ namespace EveryDayShuffling
         {
             Console.WriteLine("Welcome. Coming soon options to sort and shuffle.");
             CardDeck cd = new CardDeck();
-            foreach(Card card in cd.Cards)
-            {
-                Console.WriteLine("Card is a {0} of {1}s.", card.rank, card.suit);
-            }
-            Console.ReadLine();
+            Console.WriteLine(cd.ToString());
+            Console.ReadKey();
         }
     }
-
+    
     public struct Card
     {
 
-        private int _rank;
+        private CardValue _rank;
         private Suit _suit;
 
-        public int rank
+        public CardValue rank
         {
             get { return _rank; }
             set { _rank = value; }
@@ -39,6 +55,11 @@ namespace EveryDayShuffling
         {
             get { return _suit; }
             set { _suit = value; }
+        }
+
+        public override string ToString()
+        {
+            return String.Format("{0} of {1}s.", rank, suit);
         }
     }
 
@@ -49,7 +70,7 @@ namespace EveryDayShuffling
         public Card[] Cards
         {
             get { return _cards; }
-            set { _cards = new Card[52]; }
+            set { _cards = value; }
         }
         public CardDeck()
         {
@@ -59,27 +80,40 @@ namespace EveryDayShuffling
             int initialDeckPlacement = 0;
             foreach (Suit suit in Enum.GetValues(typeof(Suit)))
             {
-                //Cards rank from 2 to 14, we are assuming Ace-High rules for now.
-                for(int i = 2; i <=14; i++)
+                foreach(CardValue value in Enum.GetValues(typeof(CardValue)))
                 {
-                    Cards[initialDeckPlacement].rank = i;
+                    Cards[initialDeckPlacement].rank = value;
                     Cards[initialDeckPlacement].suit = suit;
                     initialDeckPlacement++;
                 }
             }
         }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (Card card in Cards)
+            {
+                sb.AppendLine(card.ToString());
+            }
+            return sb.ToString();
+        }
     }
 
+    //Define a series of Card manipulation methods
     public static class CardDealer
     {
-        public static CardDeck Shuffle(CardDeck cd)
+        public static void Shuffle( ref CardDeck cd)
         {
-            return cd;
+            cd.Cards = cd.Cards;
+            throw new NotImplementedException();
+            //return cards;
         }
 
-        public static CardDeck Sort(CardDeck cd)
+        public static void Sort(ref CardDeck cd)
         {
-            return cd;
+            cd.Cards = cd.Cards.OrderBy(c => c.rank).OrderBy(c => c.suit).ToArray<Card>();
         }
+
     }
 }

@@ -53,6 +53,12 @@
     <Compile Include="Core.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EveryDayShuffling\EveryDayShuffling.csproj">
+      <Project>{423adc3d-9862-4ba1-8143-a6f90dc9836c}</Project>
+      <Name>EveryDayShuffling</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
