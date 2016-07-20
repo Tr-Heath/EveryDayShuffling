@@ -116,7 +116,7 @@ namespace TestShuffle
         /// <summary>
         /// When CardDeck is instantiated, it should contain 52 elements.
         /// All elements should be of type Card, but that is enforced by definition.
-        /// There should be 13 of each Suit and 4 Suits
+        /// There should be 13 of each Suit
         /// </summary>
         [TestMethod]
         public void CreateDeck_AreThere13PerSuit()
