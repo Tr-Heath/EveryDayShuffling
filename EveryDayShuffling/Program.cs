@@ -33,9 +33,11 @@ namespace EveryDayShuffling
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Welcome. Coming soon options to sort and shuffle.");
+            Console.WriteLine("Welcome. The program will initialize, shuffle and display a deck of cards. More options to come.");
             CardDeck cd = new CardDeck();
+            CardDealer.Shuffle(ref cd);
             Console.WriteLine(cd.ToString());
+            Console.WriteLine("Please press any key to close...");
             Console.ReadKey();
         }
     }
@@ -77,14 +79,11 @@ namespace EveryDayShuffling
             get { return _cards; }
             set { _cards = value; }
         }
+        //initialize sorted Deck of Cards.
         public CardDeck(): this(52)
-        {
-            
-        }
+        {  }
         public CardDeck(int size)
         {
-            //int size = 52;
-            //initialize sorted Deck of Cards.
             Cards = new Card[size];
             
             int deckPlacement = 0;
@@ -148,6 +147,5 @@ namespace EveryDayShuffling
         {
             cd.Cards = cd.Cards.OrderBy(c => c.rank).OrderBy(c => c.suit).ToArray<Card>();
         }
-
     }
 }

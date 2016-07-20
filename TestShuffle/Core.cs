@@ -42,6 +42,26 @@ namespace TestShuffle
         }
 
         /// <summary>
+        /// Testing that the deck is changed by shuffle, but only the order
+        /// All cards should still make a valid 52 card, 4 suit deck.
+        /// </summary>
+        [TestMethod]
+        public void ShuffleDeck_ShuffledAndStillValid()
+        {
+            CardDeck cd = new CardDeck();
+            string startingDeck = cd.ToSmallString();
+
+            CardDealer.Shuffle(ref cd);
+            Assert.AreEqual(52, cd.Cards.Count());
+            Assert.AreEqual(cd.Cards.Count(), cd.Cards.Distinct().Count());
+            Assert.AreEqual(4, cd.Cards.GroupBy(c => c.suit).Count());
+            Assert.AreEqual(13, cd.Cards.Where(c => c.suit == Suit.Club).Count());
+            Assert.AreEqual(13, cd.Cards.Where(c => c.suit == Suit.Heart).Count());
+            Assert.AreEqual(13, cd.Cards.Where(c => c.suit == Suit.Diamond).Count());
+            Assert.AreEqual(13, cd.Cards.Where(c => c.suit == Suit.Spade).Count());
+        }
+
+        /// <summary>
         /// Testing that the shuffle method does not produce duplicate shuffle orders.
         /// Over a large number of shuffles this can help prove randomness as with a 52 deck of cards 
         /// there should never be the same deck order twice, as there are more combinations than atoms in the known universe.
