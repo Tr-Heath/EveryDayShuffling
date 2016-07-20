@@ -77,19 +77,31 @@ namespace EveryDayShuffling
             get { return _cards; }
             set { _cards = value; }
         }
-        public CardDeck()
+        public CardDeck(): this(52)
         {
-            //initialize sorted Deck of Cards.
-            Cards = new Card[52];
             
-            int initialDeckPlacement = 0;
+        }
+        public CardDeck(int size)
+        {
+            //int size = 52;
+            //initialize sorted Deck of Cards.
+            Cards = new Card[size];
+            
+            int deckPlacement = 0;
             foreach (Suit suit in Enum.GetValues(typeof(Suit)))
             {
                 foreach(CardValue value in Enum.GetValues(typeof(CardValue)))
                 {
-                    Cards[initialDeckPlacement].rank = value;
-                    Cards[initialDeckPlacement].suit = suit;
-                    initialDeckPlacement++;
+                    if (deckPlacement == size)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        Cards[deckPlacement].rank = value;
+                        Cards[deckPlacement].suit = suit;
+                        deckPlacement++;
+                    }
                 }
             }
         }
@@ -118,10 +130,18 @@ namespace EveryDayShuffling
     //Define a series of Card manipulation methods
     public static class CardDealer
     {
+        static Random r = new Random();
+        //Based on Fisher-Yates shuffle and as demonstrated by Donald Knuth in The Art of Computer Programming 2. Seminumerical algorithms.
         public static void Shuffle( ref CardDeck cd)
         {
-            cd.Cards = cd.Cards;
-            throw new NotImplementedException();
+            for (int n = cd.Cards.Length - 1; n > 0; --n)
+            {
+                int k = r.Next(n + 1);
+
+                Card temp = cd.Cards[k];
+                cd.Cards[k] = cd.Cards[n];
+                cd.Cards[n] = temp;
+            }
         }
 
         public static void Sort(ref CardDeck cd)

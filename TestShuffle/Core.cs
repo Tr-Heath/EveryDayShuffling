@@ -1,19 +1,21 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 using EveryDayShuffling;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 
 namespace TestShuffle
 {
     [TestClass]
     public class Core
     {
+        /// <summary>
+        /// Test that the Sort function brings an array of cards back to Ascending by rank and suit.
+        /// </summary>
         [TestMethod]
         public void SortDeck_Sorted()
         {
             CardDeck cd = new CardDeck();
-            //Ensure the baseline is ordered Ascending by Rank and then by Suit.
             cd.Cards = cd.Cards.OrderBy(c => c.rank).OrderBy(c => c.suit).ToArray<Card>();
             string baselineDeck = cd.ToSmallString();
 
@@ -23,9 +25,10 @@ namespace TestShuffle
             CardDealer.Sort(ref cd); //Sort should return this to sorted by ascending ranks and suits.
             Assert.AreEqual(baselineDeck, cd.ToSmallString());
         }
+
         /// <summary>
-        /// Testing that the deck is shuffled, which is not an exact science.
-        /// Will test that the shuffle function is changing the order, although technically, it could possibly 
+        /// Testing that the deck is changed by shuffle, which is not an exact science.
+        /// Will test that the shuffle function is changing the order, although technically, it is possible
         /// a valid shuffle to end up in the same order again.
         /// </summary>
         [TestMethod]
@@ -36,14 +39,15 @@ namespace TestShuffle
 
             CardDealer.Shuffle(ref cd);
             Assert.AreNotEqual(startingDeck, cd.ToSmallString());
-
         }
+
         /// <summary>
         /// Testing that the shuffle method does not produce duplicate shuffle orders.
-        /// This would demonstrate that we have bias in our randomization process.
+        /// Over a large number of shuffles this can help prove randomness as with a 52 deck of cards 
+        /// there should never be the same deck order twice, as there are more combinations than atoms in the known universe.
         /// </summary>
         [TestMethod]
-        public void ShuffleDeck_NotBiased()
+        public void ShuffleDeck_AlwaysUniqueShuffle()
         {
             //The HashSet will only allow unique shuffles to insert.
             HashSet<string> shuffleResults = new HashSet<string>();
@@ -57,6 +61,37 @@ namespace TestShuffle
             }
             //If the number of shuffles is the same as the count in our HashSet, all shuffles were unique.
             Assert.IsTrue(shuffleResults.Count == timesToShuffle);
+        }
+
+        /// <summary>
+        /// If we reduce the deck size, we can see if all expected combinations are seen with the same(nearly) frequency.
+        /// </summary>
+        [TestMethod]
+        public void ShuffleDeck_BiasCheck()
+        {
+            ConcurrentDictionary<string, int> tallyOfCombinations = new ConcurrentDictionary<string, int>();
+            int deckSize = 6;
+            int timesToShuffle = 1000000;
+            int numberOfCombinations = Helper.Factorial(deckSize);
+
+            string currentCombination = "";
+
+            //Initialize a deck with a testable sub-set of cards.
+            CardDeck cd = new CardDeck(deckSize);
+
+            for (int i = 0; i < timesToShuffle; i++)
+            {
+                CardDealer.Shuffle(ref cd);
+                currentCombination = cd.ToSmallString();
+
+                tallyOfCombinations.AddOrUpdate(currentCombination, 1, (id, count) => count + 1);
+            }
+            
+            //The tally for each combination should be about equal if our algorithm is fair.
+            foreach(KeyValuePair<string, int> entry in tallyOfCombinations)
+            {
+                Assert.IsTrue(Helper.IsCloseToTallyTarget(timesToShuffle, numberOfCombinations, entry.Value));
+            }
         }
         /// <summary>
         /// When CardDeck is instantiated, it should contain 52 elements.
@@ -94,8 +129,26 @@ namespace TestShuffle
         public void CreateDeck_AreThereOnlyUniqueCards()
         {
             CardDeck cd = new CardDeck();
-
+            Assert.AreEqual(52, cd.Cards.Count());
             Assert.AreEqual(cd.Cards.Count(), cd.Cards.Distinct().Count());
+        }
+    }
+
+    public static class Helper
+    {
+        public static int Factorial(int i)
+        {
+            if (i <= 1)
+                return 1;
+            return i * Factorial(i - 1);
+        }
+
+        public static bool IsCloseToTallyTarget(int timesToShuffle, int numberOfCombinations, int actualTallyAmount)
+        {
+            int target = timesToShuffle / (numberOfCombinations <= 0 ? 1 : numberOfCombinations);
+            //This gets tricky, we should expect more variance the larger numberOfCombinations is. What defines too much?
+            decimal variance = target * (numberOfCombinations / (decimal)500);
+            return actualTallyAmount >= (target - variance) && actualTallyAmount <= (target + variance);
         }
     }
 }
