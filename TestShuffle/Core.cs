@@ -3,6 +3,8 @@ using System.Linq;
 using EveryDayShuffling;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
+using System.Threading.Tasks;
+using EveryDayShuffling.Models;
 
 namespace TestShuffle
 {
@@ -16,7 +18,7 @@ namespace TestShuffle
         public void SortDeck_Sorted()
         {
             CardDeck cd = new CardDeck();
-            cd.Cards = cd.Cards.OrderBy(c => c.rank).OrderBy(c => c.suit).ToArray<Card>();
+            cd.Cards = cd.Cards.OrderBy(c => c.Rank).ThenBy(c => c.Suit).ToArray();
             string baselineDeck = cd.ToSmallString();
 
             cd.Cards = cd.Cards.Reverse().ToArray<Card>(); 
@@ -54,11 +56,11 @@ namespace TestShuffle
             CardDealer.Shuffle(ref cd);
             Assert.AreEqual(52, cd.Cards.Count());
             Assert.AreEqual(cd.Cards.Count(), cd.Cards.Distinct().Count());
-            Assert.AreEqual(4, cd.Cards.GroupBy(c => c.suit).Count());
-            Assert.AreEqual(13, cd.Cards.Where(c => c.suit == Suit.Club).Count());
-            Assert.AreEqual(13, cd.Cards.Where(c => c.suit == Suit.Heart).Count());
-            Assert.AreEqual(13, cd.Cards.Where(c => c.suit == Suit.Diamond).Count());
-            Assert.AreEqual(13, cd.Cards.Where(c => c.suit == Suit.Spade).Count());
+            Assert.AreEqual(4, cd.Cards.GroupBy(c => c.Suit).Count());
+            Assert.AreEqual(13, cd.Cards.Where(c => c.Suit == Suit.Club).Count());
+            Assert.AreEqual(13, cd.Cards.Where(c => c.Suit == Suit.Heart).Count());
+            Assert.AreEqual(13, cd.Cards.Where(c => c.Suit == Suit.Diamond).Count());
+            Assert.AreEqual(13, cd.Cards.Where(c => c.Suit == Suit.Spade).Count());
         }
 
         /// <summary>
@@ -74,11 +76,12 @@ namespace TestShuffle
             CardDeck cd = new CardDeck();
             int timesToShuffle = 1000000;
 
-            for(int i = 0; i < timesToShuffle; i++)
+            for (int i = 0; i < timesToShuffle; i++)
             {
                 CardDealer.Shuffle(ref cd);
                 shuffleResults.Add(cd.ToSmallString());
             }
+
             //If the number of shuffles is the same as the count in our HashSet, all shuffles were unique.
             Assert.IsTrue(shuffleResults.Count == timesToShuffle);
         }
@@ -123,10 +126,10 @@ namespace TestShuffle
         {
             CardDeck cd = new CardDeck();
             
-            Assert.AreEqual(13, cd.Cards.Where(c => c.suit == Suit.Club).Count());
-            Assert.AreEqual(13, cd.Cards.Where(c => c.suit == Suit.Heart).Count());
-            Assert.AreEqual(13, cd.Cards.Where(c => c.suit == Suit.Diamond).Count());
-            Assert.AreEqual(13, cd.Cards.Where(c => c.suit == Suit.Spade).Count());
+            Assert.AreEqual(13, cd.Cards.Where(c => c.Suit == Suit.Club).Count());
+            Assert.AreEqual(13, cd.Cards.Where(c => c.Suit == Suit.Heart).Count());
+            Assert.AreEqual(13, cd.Cards.Where(c => c.Suit == Suit.Diamond).Count());
+            Assert.AreEqual(13, cd.Cards.Where(c => c.Suit == Suit.Spade).Count());
         }
         /// <summary>
         /// When CardDeck is instantiated, it should contain 52 elements.
@@ -138,7 +141,7 @@ namespace TestShuffle
         {
             CardDeck cd = new CardDeck();
 
-            Assert.AreEqual(4, cd.Cards.GroupBy(c => c.suit).Count());
+            Assert.AreEqual(4, cd.Cards.GroupBy(c => c.Suit).Count());
         }
         /// <summary>
         /// When CardDeck is instantiated, it should contain 52 elements.
