@@ -41,10 +41,9 @@ namespace EveryDayShuffling
             Console.ReadKey();
         }
     }
-    
+
     public struct Card
     {
-
         private CardValue _rank;
         private Suit _suit;
 
@@ -85,7 +84,7 @@ namespace EveryDayShuffling
         public CardDeck(int size)
         {
             Cards = new Card[size];
-            
+
             int deckPlacement = 0;
             foreach (Suit suit in Enum.GetValues(typeof(Suit)))
             {
