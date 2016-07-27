@@ -43,6 +43,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CardDealer.cs" />
+    <Compile Include="CardDeck.cs" />
+    <Compile Include="Models\Card.cs" />
+    <Compile Include="Models\CardValue.cs" />
+    <Compile Include="Models\Suit.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
